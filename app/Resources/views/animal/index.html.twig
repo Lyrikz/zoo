@@ -1,10 +1,10 @@
 <h3>Animal</h3>
 <a href="{{ path('app_species_index') }}">Species</a>
-<a href="{{ path('app_animal_create', {'species': species.id}) }}">Create animal</a><br>
+<a href="{{ path('app_animal_create', {'species': species.uuid}) }}">Create animal</a><br>
 <hr>
 {% for animal in animals %}
     {{ animal.name }}
-    <a href="{{ path('app_animal_edit', {'animal': animal.id, 'species': species.id}) }}">Edit</a>
-    {{ renderDeleteForm(path('app_animal_delete', {'animal': animal.id, 'species': species.id})) }}
+    <a href="{{ path('app_animal_edit', {'animal': animal.uuid, 'species': species.uuid}) }}">Edit</a>
+    {{ renderDeleteForm(path('app_animal_delete', {'animal': animal.uuid, 'species': species.uuid})) }}
     <br>
 {% endfor %}

@@ -48,7 +48,7 @@ trait ModelManagerAwareTrait
      *
      * @return bool
      */
-    public function save(object $object, bool $andFlush = true): bool
+    public function save($object, bool $andFlush = true): bool
     {
         return $this->modelManager->save($object, $andFlush);
     }

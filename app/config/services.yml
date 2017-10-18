@@ -10,6 +10,9 @@ services:
         AppBundle\Model\ModelManagerAwareInterface:
             tags:
                 - { name: model.manager }
+        Doctrine\Common\EventSubscriber:
+            tags:
+                - { name: doctrine.event_subscriber }
 
     AppBundle\:
         resource: '../../src/AppBundle/*'
@@ -19,3 +22,8 @@ services:
         resource: '../../src/AppBundle/Controller'
         public: true
         tags: ['controller.service_arguments']
+
+    AppBundle\Request\ParamConverter\UuidParamConverter:
+        decorates: sensio_framework_extra.converter.doctrine.orm
+        autowire: true
+        public: false

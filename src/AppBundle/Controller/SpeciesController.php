@@ -5,8 +5,8 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Species;
 use AppBundle\Form\Type\DeleteType;
 use AppBundle\Form\Type\Species\SpeciesType;
+use AppBundle\Model\ModelManager;
 use AppBundle\Responder\Responder;
-use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -31,22 +31,22 @@ class SpeciesController
     private $formFactory;
 
     /**
-     * @var ObjectManager
+     * @var ModelManager
      */
-    private $objectManager;
+    private $modelManager;
 
     /**
      * SpeciesController constructor.
      *
      * @param Responder            $responder
      * @param FormFactoryInterface $formFactory
-     * @param ObjectManager        $objectManager
+     * @param ModelManager         $modelManager
      */
-    public function __construct(Responder $responder, FormFactoryInterface $formFactory, ObjectManager $objectManager)
+    public function __construct(Responder $responder, FormFactoryInterface $formFactory, ModelManager $modelManager)
     {
         $this->responder = $responder;
         $this->formFactory = $formFactory;
-        $this->objectManager = $objectManager;
+        $this->modelManager = $modelManager;
     }
 
     /**
@@ -56,7 +56,7 @@ class SpeciesController
      */
     public function indexAction()
     {
-        $species = $this->objectManager->getRepository(Species::class)->findAll();
+        $species = $this->modelManager->retrieve(Species::class);
 
         return $this->responder->render('species/index.html.twig', [
             'species' => $species,
@@ -76,8 +76,7 @@ class SpeciesController
         $form = $this->formFactory->create(SpeciesType::class, $species);
 
         if ($form->handleRequest($request)->isValid()) {
-            $this->objectManager->persist($species);
-            $this->objectManager->flush();
+            $this->modelManager->save($species);
 
             return $this->responder->redirect('app_species_index');
         }
@@ -100,7 +99,7 @@ class SpeciesController
         $form = $this->formFactory->create(SpeciesType::class, $species);
 
         if ($form->handleRequest($request)->isValid()) {
-            $this->objectManager->flush();
+            $this->modelManager->edit($species);
 
             return $this->responder->redirect('app_species_index');
         }
@@ -122,8 +121,7 @@ class SpeciesController
     {
         $form = $this->formFactory->create(DeleteType::class);
         if ($form->handleRequest($request)->isValid()) {
-            $this->objectManager->remove($species);
-            $this->objectManager->flush();
+            $this->modelManager->delete($species);
         }
 
         return $this->responder->redirect('app_species_index');

@@ -83,7 +83,7 @@ class AnimalController
             $this->animalManager->save($animal);
 
             return $this->responder->redirect('app_animal_index', [
-                'species' => $species->getId(),
+                'species' => $species->getUuid(),
             ]);
         }
 
@@ -110,7 +110,7 @@ class AnimalController
             $this->animalManager->edit($animal);
 
             return $this->responder->redirect('app_animal_index', [
-                'species' => $species->getId(),
+                'species' => $species->getUuid(),
             ]);
         }
 
@@ -138,7 +138,7 @@ class AnimalController
         }
 
         return $this->responder->redirect('app_animal_index', [
-            'species' => $species->getId(),
+            'species' => $species->getUuid(),
         ]);
     }
 }

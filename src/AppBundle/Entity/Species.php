@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Doctrine\ORM\Extension\EntityCycleInterface;
+use AppBundle\Doctrine\ORM\Extension\EntityCycleTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,8 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="species")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SpeciesRepository")
  */
-class Species
+class Species implements EntityCycleInterface
 {
+    use EntityCycleTrait;
+
     /**
      * @var int
      *
