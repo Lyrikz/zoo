@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Doctrine\ORM\Extension\EntityCycleInterface;
+use AppBundle\Doctrine\ORM\Extension\EntityCycleTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,8 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="animal")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\AnimalRepository")
  */
-class Animal
+class Animal implements EntityCycleInterface
 {
+    use EntityCycleTrait;
+
     /**
      * @var int
      *
@@ -45,7 +49,7 @@ class Animal
     /**
      * @var Species
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Species")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Species", inversedBy="animals")
      */
     private $species;
 
@@ -130,5 +134,28 @@ class Animal
     {
         return $this->weight;
     }
-}
 
+    /**
+     * Set species
+     *
+     * @param Species $species
+     *
+     * @return Animal
+     */
+    public function setSpecies(Species $species = null)
+    {
+        $this->species = $species;
+
+        return $this;
+    }
+
+    /**
+     * Get species
+     *
+     * @return Species
+     */
+    public function getSpecies()
+    {
+        return $this->species;
+    }
+}

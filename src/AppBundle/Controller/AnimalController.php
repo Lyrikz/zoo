@@ -58,10 +58,8 @@ class AnimalController
      */
     public function indexAction(Species $species)
     {
-        $animals = $this->animalManager->retrieve(Animal::class, ['species' => $species]);
-
         return $this->responder->render('animal/index.html.twig', [
-            'animals' => $animals,
+            'animals' => $species->getAnimals(),
             'species' => $species,
         ]);
     }

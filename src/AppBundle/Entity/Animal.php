@@ -49,7 +49,7 @@ class Animal implements EntityCycleInterface
     /**
      * @var Species
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Species")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Species", inversedBy="animals")
      */
     private $species;
 
