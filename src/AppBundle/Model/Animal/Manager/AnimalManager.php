@@ -23,7 +23,9 @@ class AnimalManager implements ModelManagerAwareInterface
     {
         $animal = new Animal();
         $animal->setSpecies($species);
-        $species->addAnimal($animal);
+        if (null !== $species) {
+            $species->addAnimal($animal);
+        }
 
         return $animal;
     }
@@ -36,7 +38,9 @@ class AnimalManager implements ModelManagerAwareInterface
     public function delete(Animal $animal)
     {
         $species = $animal->getSpecies();
-        $species->removeAnimal($animal);
+        if (null !== $species) {
+            $species->removeAnimal($animal);
+        }
 
         return $this->modelManager->delete($animal);
     }
