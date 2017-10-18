@@ -1,0 +1,10 @@
+<h3>Species</h3>
+
+<a href="{{ path('app_species_create') }}">Create species</a><br>
+<hr>
+{% for specie in species %}
+    <a href="{{ path('app_animal_index', {'species': specie.id}) }}">{{ specie.name }}</a>
+    <a href="{{ path('app_species_edit', {'species': specie.id}) }}">Edit</a>
+    {{ renderDeleteForm(path('app_species_delete', {'species': specie.id})) }}
+    <br>
+{% endfor %}
