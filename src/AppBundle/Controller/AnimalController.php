@@ -6,8 +6,8 @@ use AppBundle\Entity\Animal;
 use AppBundle\Entity\Species;
 use AppBundle\Form\Type\Animal\AnimalType;
 use AppBundle\Form\Type\DeleteType;
+use AppBundle\Model\Animal\Manager\AnimalManager;
 use AppBundle\Responder\Responder;
-use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -30,24 +30,23 @@ class AnimalController
      * @var FormFactoryInterface
      */
     private $formFactory;
-
     /**
-     * @var ObjectManager
+     * @var AnimalManager
      */
-    private $objectManager;
+    private $animalManager;
 
     /**
      * AnimalController constructor.
      *
      * @param Responder            $responder
      * @param FormFactoryInterface $formFactory
-     * @param ObjectManager        $objectManager
+     * @param AnimalManager        $animalManager
      */
-    public function __construct(Responder $responder, FormFactoryInterface $formFactory, ObjectManager $objectManager)
+    public function __construct(Responder $responder, FormFactoryInterface $formFactory, AnimalManager $animalManager)
     {
         $this->responder = $responder;
         $this->formFactory = $formFactory;
-        $this->objectManager = $objectManager;
+        $this->animalManager = $animalManager;
     }
 
     /**
@@ -59,10 +58,7 @@ class AnimalController
      */
     public function indexAction(Species $species)
     {
-        $repository = $this->objectManager->getRepository(Animal::class);
-        $animals = $repository->findBy([
-            'species' => $species,
-        ]);
+        $animals = $this->animalManager->retrieve(Animal::class, ['species' => $species]);
 
         return $this->responder->render('animal/index.html.twig', [
             'animals' => $animals,
@@ -80,12 +76,11 @@ class AnimalController
      */
     public function createAction(Request $request, Species $species)
     {
-        $animal = new Animal();
+        $animal = $this->animalManager->createAnimal($species);
         $form = $this->formFactory->create(AnimalType::class, $animal);
 
         if ($form->handleRequest($request)->isValid()) {
-            $this->objectManager->persist($animal);
-            $this->objectManager->flush();
+            $this->animalManager->save($animal);
 
             return $this->responder->redirect('app_animal_index', [
                 'species' => $species->getId(),
@@ -112,7 +107,7 @@ class AnimalController
         $form = $this->formFactory->create(AnimalType::class, $animal);
 
         if ($form->handleRequest($request)->isValid()) {
-            $this->objectManager->flush();
+            $this->animalManager->edit($animal);
 
             return $this->responder->redirect('app_animal_index', [
                 'species' => $species->getId(),
@@ -139,8 +134,7 @@ class AnimalController
         $form = $this->formFactory->create(DeleteType::class);
 
         if ($form->handleRequest($request)->isValid()) {
-            $this->objectManager->remove($animal);
-            $this->objectManager->flush();
+            $this->animalManager->delete($animal);
         }
 
         return $this->responder->redirect('app_animal_index', [

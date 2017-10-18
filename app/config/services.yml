@@ -6,6 +6,11 @@ services:
         autoconfigure: true
         public: false
 
+    _instanceof:
+        AppBundle\Model\ModelManagerAwareInterface:
+            tags:
+                - { name: model.manager }
+
     AppBundle\:
         resource: '../../src/AppBundle/*'
         exclude: '../../src/AppBundle/{Entity,Repository,Tests}'
